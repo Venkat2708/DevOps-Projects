@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>VRC MART — Premium Collection</title>
+  <title>NexusShop — Premium Collection</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"/>
   <style>
@@ -470,6 +470,127 @@
     }
 
     /* ══════════════════════════════════
+       FAVORITES DRAWER
+    ══════════════════════════════════ */
+    .fav-btn {
+      position: relative;
+    }
+    .fav-badge {
+      position: absolute; top: -7px; right: -7px;
+      background: #e05252; color: white;
+      font-size: 10px; font-weight: 700;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: none; place-items: center;
+      border: 2px solid var(--bg);
+    }
+    .fav-badge.visible { display: inline-grid; }
+
+    .drawer-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+    .fav-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 201;
+      width: 400px; max-width: 95vw;
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+    }
+    .fav-drawer.open { transform: translateX(0); }
+
+    .drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .drawer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .drawer-title i { color: var(--danger); font-size: 18px; }
+    .drawer-close {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .drawer-close:hover { color: var(--primary); border-color: var(--accent); }
+
+    .drawer-body {
+      flex: 1; overflow-y: auto; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .drawer-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; color: var(--muted); text-align: center;
+      padding: 40px 0;
+    }
+    .drawer-empty i { font-size: 48px; opacity: 0.25; }
+    .drawer-empty p { font-size: 15px; }
+
+    .fav-item {
+      display: flex; gap: 14px; align-items: center;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px;
+      transition: border-color var(--transition);
+      animation: fadeUp 0.3s ease both;
+    }
+    .fav-item:hover { border-color: rgba(201,169,110,0.3); }
+    .fav-item img {
+      width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+    }
+    .fav-item-info { flex: 1; min-width: 0; }
+    .fav-item-name {
+      font-size: 14px; font-weight: 600; color: var(--primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .fav-item-cat { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 0 6px; }
+    .fav-item-price { font-size: 15px; font-weight: 700; color: var(--accent2); }
+    .fav-item-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .fav-add-btn {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border: 0; color: #1a1200; font-size: 11px; font-weight: 700;
+      padding: 6px 10px; border-radius: 7px; cursor: pointer;
+      white-space: nowrap; font-family: 'DM Sans', sans-serif;
+      transition: opacity var(--transition);
+    }
+    .fav-add-btn:hover { opacity: 0.85; }
+    .fav-remove-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-size: 11px; font-weight: 600;
+      padding: 6px 10px; border-radius: 7px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all var(--transition);
+    }
+    .fav-remove-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    .drawer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .clear-fav-btn {
+      width: 100%; background: transparent;
+      border: 1px solid var(--border); color: var(--muted);
+      padding: 11px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all var(--transition);
+    }
+    .clear-fav-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ══════════════════════════════════
        TOAST NOTIFICATION
     ══════════════════════════════════ */
     .toast {
@@ -523,6 +644,207 @@
       .deal-title { font-size: 26px; }
       .search-wrap { min-width: 160px; }
     }
+    /* ══════════════════════════════════
+       AUTH MODAL
+    ══════════════════════════════════ */
+    .auth-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .auth-overlay.open { opacity: 1; pointer-events: all; }
+
+    .auth-modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden;
+    }
+    .auth-overlay.open .auth-modal { transform: translateY(0) scale(1); }
+
+    .auth-modal-top {
+      position: relative;
+      padding: 32px 32px 0;
+      text-align: center;
+    }
+    .auth-modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .auth-modal-close:hover { color: var(--primary); border-color: var(--accent); }
+
+    .auth-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .auth-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+    /* Tabs */
+    .auth-tabs {
+      display: flex; background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 4px;
+      margin: 0 32px 24px;
+    }
+    .auth-tab {
+      flex: 1; padding: 9px;
+      border-radius: 7px; border: 0;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      background: transparent; color: var(--muted);
+      transition: all var(--transition);
+    }
+    .auth-tab.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
+    /* Forms */
+    .auth-form-wrap { padding: 0 32px 32px; }
+    .auth-form { display: flex; flex-direction: column; gap: 14px; }
+    .auth-form.hidden { display: none; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .form-input {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      color: var(--primary); font-size: 14px;
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color var(--transition);
+    }
+    .form-input:focus { border-color: var(--accent); }
+    .form-input::placeholder { color: var(--muted); }
+    .form-input.error { border-color: var(--danger); }
+
+    .input-wrap { position: relative; }
+    .input-wrap .form-input { padding-right: 44px; width: 100%; }
+    .toggle-pw {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: 0; color: var(--muted); cursor: pointer;
+      font-size: 14px; transition: color var(--transition);
+    }
+    .toggle-pw:hover { color: var(--accent); }
+
+    .form-error {
+      font-size: 12px; color: var(--danger); margin-top: -6px;
+      display: none;
+    }
+    .form-error.show { display: block; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--muted); font-size: 12px; margin: 4px 0;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .social-auth { display: flex; gap: 10px; }
+    .social-auth-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--bg3);
+      color: var(--primary); font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all var(--transition);
+    }
+    .social-auth-btn:hover { border-color: var(--accent); background: rgba(201,169,110,0.08); }
+    .social-auth-btn i { font-size: 15px; }
+
+    .btn-auth {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #1a1200; border: 0; border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity var(--transition), transform var(--transition);
+      margin-top: 4px;
+    }
+    .btn-auth:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-auth:active { transform: translateY(0); }
+
+    .auth-footer-text {
+      text-align: center; font-size: 13px; color: var(--muted); margin-top: 16px;
+    }
+    .auth-footer-text a {
+      color: var(--accent); font-weight: 600; cursor: pointer;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .forgot-link {
+      text-align: right; font-size: 12px; color: var(--accent);
+      cursor: pointer; font-weight: 600; margin-top: -8px;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Checkbox */
+    .check-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+    .check-row input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; }
+
+    /* User avatar in header (logged in state) */
+    .user-avatar-btn {
+      width: 40px; height: 40px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(201,169,110,0.4);
+      background: linear-gradient(135deg, rgba(201,169,110,0.2), rgba(201,169,110,0.08));
+      color: var(--accent2); font-size: 14px; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      transition: all var(--transition); position: relative;
+    }
+    .user-avatar-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,169,110,0.15); }
+
+    /* User dropdown */
+    .user-dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      min-width: 220px; background: var(--bg2);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      overflow: hidden; z-index: 150;
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: all 0.22s ease;
+    }
+    .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+    .dropdown-header {
+      padding: 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .dropdown-avatar {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700;
+      color: #1a1200; flex-shrink: 0;
+    }
+    .dropdown-name { font-size: 14px; font-weight: 600; }
+    .dropdown-email { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px; font-size: 13px; font-weight: 500;
+      color: var(--muted); cursor: pointer; transition: all var(--transition);
+      border: 0; background: none; width: 100%; text-align: left;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .dropdown-item i { width: 16px; color: var(--accent); font-size: 13px; }
+    .dropdown-item:hover { color: var(--primary); background: var(--bg3); }
+    .dropdown-item.danger:hover { color: var(--danger); }
+    .dropdown-item.danger i { color: var(--danger); }
+    .dropdown-divider { height: 1px; background: var(--border); }
   </style>
 </head>
 <body>
@@ -534,7 +856,7 @@
       <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">
         <i class="fas fa-bars"></i>
       </button>
-      <a class="brand" href="#">VRC <span>MART</span></a>
+      <a class="brand" href="#">Nexus<span>Shop</span></a>
     </div>
 
     <nav class="main-nav" id="mainNav">
@@ -553,8 +875,27 @@
         <button id="searchBtn" aria-label="Search"><i class="fas fa-arrow-right"></i></button>
       </div>
       <div class="header-actions">
-        <a class="icon-btn" title="Account" href="#"><i class="far fa-user"></i></a>
-        <a class="icon-btn" title="Wishlist" href="#"><i class="far fa-heart"></i></a>
+        <div style="position:relative;" id="authBtnWrap">
+          <a class="icon-btn" id="authBtn" title="Account" href="#" aria-label="Account"><i class="far fa-user"></i></a>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-avatar" id="dropdownAvatar">?</div>
+              <div>
+                <div class="dropdown-name" id="dropdownName">—</div>
+                <div class="dropdown-email" id="dropdownEmail">—</div>
+              </div>
+            </div>
+            <button class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</button>
+            <button class="dropdown-item"><i class="fas fa-box"></i> My Orders</button>
+            <button class="dropdown-item"><i class="fas fa-cog"></i> Settings</button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+          </div>
+        </div>
+        <button class="icon-btn fav-btn" id="favDrawerBtn" title="Favorites" aria-label="Open favorites">
+          <i class="far fa-heart"></i>
+          <span class="fav-badge" id="favBadge">0</span>
+        </button>
         <a class="icon-btn cart-btn" href="#" id="cartBtn" title="Cart" aria-label="Cart">
           <i class="fas fa-shopping-bag"></i>
           <span class="cart-count" id="cartCount">0</span>
@@ -741,12 +1082,139 @@
 
 </main>
 
+<!-- ── AUTH MODAL ── -->
+<div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-label="Sign in or create account">
+  <div class="auth-modal" id="authModal">
+    <div class="auth-modal-top">
+      <button class="auth-modal-close" id="authModalClose" aria-label="Close"><i class="fas fa-times"></i></button>
+      <div class="auth-logo">NexusShop</div>
+      <div class="auth-subtitle" id="authSubtitle">Sign in to your account</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab active" id="tabLogin" role="tab" aria-selected="true">Sign In</button>
+      <button class="auth-tab" id="tabSignup" role="tab" aria-selected="false">Create Account</button>
+    </div>
+
+    <div class="auth-form-wrap">
+
+      <!-- LOGIN FORM -->
+      <div class="auth-form" id="loginForm">
+        <div class="social-auth">
+          <button class="social-auth-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Google</button>
+          <button class="social-auth-btn" id="githubLoginBtn"><i class="fab fa-github"></i> GitHub</button>
+        </div>
+        <div class="auth-divider">or continue with email</div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email"/>
+          <span class="form-error" id="loginEmailErr">Please enter a valid email.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <input class="form-input" id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password"/>
+            <button class="toggle-pw" type="button" data-target="loginPassword" aria-label="Toggle password"><i class="far fa-eye"></i></button>
+          </div>
+          <span class="form-error" id="loginPasswordErr">Password must be at least 6 characters.</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <label class="check-row">
+            <input type="checkbox" id="rememberMe"/> Remember me
+          </label>
+          <span class="forgot-link" id="forgotLink">Forgot password?</span>
+        </div>
+        <button class="btn-auth" id="loginSubmit">Sign In <i class="fas fa-arrow-right"></i></button>
+        <p class="auth-footer-text">Don't have an account? <a id="switchToSignup">Create one</a></p>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div class="auth-form hidden" id="signupForm">
+        <div class="social-auth">
+          <button class="social-auth-btn" id="googleSignupBtn"><i class="fab fa-google"></i> Google</button>
+          <button class="social-auth-btn" id="githubSignupBtn"><i class="fab fa-github"></i> GitHub</button>
+        </div>
+        <div class="auth-divider">or sign up with email</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" id="signupFirst" type="text" placeholder="Jane" autocomplete="given-name"/>
+            <span class="form-error" id="signupFirstErr">Required.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" id="signupLast" type="text" placeholder="Doe" autocomplete="family-name"/>
+            <span class="form-error" id="signupLastErr">Required.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email"/>
+          <span class="form-error" id="signupEmailErr">Please enter a valid email.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <input class="form-input" id="signupPassword" type="password" placeholder="Min. 6 characters" autocomplete="new-password"/>
+            <button class="toggle-pw" type="button" data-target="signupPassword" aria-label="Toggle password"><i class="far fa-eye"></i></button>
+          </div>
+          <span class="form-error" id="signupPasswordErr">Password must be at least 6 characters.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-wrap">
+            <input class="form-input" id="signupConfirm" type="password" placeholder="Repeat your password" autocomplete="new-password"/>
+            <button class="toggle-pw" type="button" data-target="signupConfirm" aria-label="Toggle confirm password"><i class="far fa-eye"></i></button>
+          </div>
+          <span class="form-error" id="signupConfirmErr">Passwords do not match.</span>
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="agreeTerms"/>
+          I agree to the <a href="#" style="color:var(--accent);">Terms &amp; Privacy Policy</a>
+        </label>
+        <span class="form-error" id="agreeErr">You must agree to the terms.</span>
+        <button class="btn-auth" id="signupSubmit">Create Account <i class="fas fa-user-plus"></i></button>
+        <p class="auth-footer-text">Already have an account? <a id="switchToLogin">Sign in</a></p>
+      </div>
+
+      <!-- FORGOT PASSWORD FORM -->
+      <div class="auth-form hidden" id="forgotForm">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Enter your email and we'll send you a reset link.</p>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" id="forgotEmail" type="email" placeholder="you@example.com"/>
+          <span class="form-error" id="forgotEmailErr">Please enter a valid email.</span>
+        </div>
+        <button class="btn-auth" id="forgotSubmit">Send Reset Link <i class="fas fa-paper-plane"></i></button>
+        <p class="auth-footer-text"><a id="backToLogin"><i class="fas fa-arrow-left"></i> Back to Sign In</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── FAVORITES DRAWER ── -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="fav-drawer" id="favDrawer" aria-label="Favorites panel">
+  <div class="drawer-header">
+    <div class="drawer-title"><i class="fas fa-heart"></i> My Favorites</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close favorites"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer" id="drawerFooter" style="display:none;">
+    <button class="clear-fav-btn" id="clearFavBtn"><i class="fas fa-trash-alt"></i> Clear All Favorites</button>
+  </div>
+</aside>
+
 <!-- ── FOOTER ── -->
 <footer>
   <div class="container">
     <div class="footer-inner">
       <div>
-        <div class="footer-brand">VRC MART</div>
+        <div class="footer-brand">NexusShop</div>
         <p class="footer-desc">A modern premium e-commerce experience built with HTML, CSS & JavaScript. Crafted with attention to every detail.</p>
         <div class="social-links">
           <a class="social-link" href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -773,7 +1241,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bottom">© <span id="year"></span> VRC MART. All rights reserved.</div>
+    <div class="footer-bottom">© <span id="year"></span> NexusShop. All rights reserved.</div>
   </div>
 </footer>
 
@@ -807,6 +1275,7 @@
   // ─── State ──────────────────────────────────────
   let cartCount = 0;
   let activeCategory = 'all';
+  let favorites = {}; // { [productId]: true }
 
   // ─── Elements ───────────────────────────────────
   const catGrid      = document.getElementById('categoriesGrid');
@@ -815,6 +1284,11 @@
   const searchInput  = document.getElementById('searchInput');
   const toast        = document.getElementById('toast');
   const toastMsg     = document.getElementById('toastMsg');
+  const favBadge     = document.getElementById('favBadge');
+  const favDrawer    = document.getElementById('favDrawer');
+  const drawerOverlay= document.getElementById('drawerOverlay');
+  const drawerBody   = document.getElementById('drawerBody');
+  const drawerFooter = document.getElementById('drawerFooter');
 
   // ─── Helpers ────────────────────────────────────
   function esc(t) {
@@ -916,13 +1390,107 @@
       btn.addEventListener('click', () => addToCart(Number(btn.dataset.id), btn));
     });
 
-    // Wishlist toggle
+    // Wishlist toggle → favorites
     prodGrid.querySelectorAll('.wish-overlay').forEach(btn => {
+      const pid = Number(btn.dataset.wish);
+      // restore state
+      if (favorites[pid]) {
+        btn.classList.add('active');
+        btn.querySelector('i').className = 'fas fa-heart';
+      }
+      btn.addEventListener('click', () => toggleFavorite(pid));
+    });
+  }
+
+  // ─── Favorites ──────────────────────────────────
+  function toggleFavorite(pid) {
+    const p = PRODUCTS.find(x => x.id === pid);
+    if (!p) return;
+    if (favorites[pid]) {
+      delete favorites[pid];
+      showToast('Removed from favorites');
+    } else {
+      favorites[pid] = true;
+      showToast('❤️ Added to favorites!');
+    }
+    updateFavBadge();
+    // Update all heart buttons for this product
+    document.querySelectorAll(`.wish-overlay[data-wish="${pid}"]`).forEach(btn => {
+      btn.classList.toggle('active', !!favorites[pid]);
+      btn.querySelector('i').className = favorites[pid] ? 'fas fa-heart' : 'far fa-heart';
+    });
+  }
+
+  function updateFavBadge() {
+    const count = Object.keys(favorites).length;
+    favBadge.textContent = count;
+    favBadge.classList.toggle('visible', count > 0);
+  }
+
+  function openFavDrawer() {
+    renderDrawer();
+    favDrawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFavDrawer() {
+    favDrawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderDrawer() {
+    drawerBody.innerHTML = '';
+    const ids = Object.keys(favorites).map(Number);
+    if (ids.length === 0) {
+      drawerBody.innerHTML = `
+        <div class="drawer-empty">
+          <i class="far fa-heart"></i>
+          <p>No favorites yet.<br>Tap the ♡ on any product to save it here.</p>
+        </div>`;
+      drawerFooter.style.display = 'none';
+      return;
+    }
+    drawerFooter.style.display = 'block';
+    ids.forEach(pid => {
+      const p = PRODUCTS.find(x => x.id === pid);
+      if (!p) return;
+      const item = document.createElement('div');
+      item.className = 'fav-item';
+      item.dataset.favId = pid;
+      item.innerHTML = `
+        <img src="${p.img}" alt="${esc(p.title)}"/>
+        <div class="fav-item-info">
+          <div class="fav-item-name">${esc(p.title)}</div>
+          <div class="fav-item-cat">${esc(p.category)}</div>
+          <div class="fav-item-price">$${p.price.toLocaleString()}</div>
+        </div>
+        <div class="fav-item-actions">
+          <button class="fav-add-btn" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Add</button>
+          <button class="fav-remove-btn" data-id="${p.id}"><i class="fas fa-times"></i> Remove</button>
+        </div>
+      `;
+      drawerBody.appendChild(item);
+    });
+
+    // Drawer add-to-cart
+    drawerBody.querySelectorAll('.fav-add-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.className = btn.classList.contains('active') ? 'fas fa-heart' : 'far fa-heart';
-        showToast(btn.classList.contains('active') ? '❤️ Added to wishlist!' : 'Removed from wishlist');
+        addToCart(Number(btn.dataset.id), null);
+      });
+    });
+    // Drawer remove from favorites
+    drawerBody.querySelectorAll('.fav-remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pid = Number(btn.dataset.id);
+        toggleFavorite(pid);
+        // Animate removal
+        const item = drawerBody.querySelector(`.fav-item[data-fav-id="${pid}"]`);
+        if (item) {
+          item.style.transition = 'opacity 0.25s, transform 0.25s';
+          item.style.opacity = '0'; item.style.transform = 'translateX(20px)';
+          setTimeout(() => renderDrawer(), 270);
+        }
       });
     });
   }
@@ -1009,6 +1577,23 @@
     const tid = setInterval(tick, 1000);
   })();
 
+  // ─── Favorites Drawer events ─────────────────────
+  document.getElementById('favDrawerBtn').addEventListener('click', openFavDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeFavDrawer);
+  drawerOverlay.addEventListener('click', closeFavDrawer);
+  document.getElementById('clearFavBtn').addEventListener('click', () => {
+    Object.keys(favorites).forEach(pid => {
+      delete favorites[Number(pid)];
+      document.querySelectorAll(`.wish-overlay[data-wish="${pid}"]`).forEach(btn => {
+        btn.classList.remove('active');
+        btn.querySelector('i').className = 'far fa-heart';
+      });
+    });
+    updateFavBadge();
+    renderDrawer();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFavDrawer(); });
+
   // ─── Scroll actions ─────────────────────────────
   document.getElementById('shopNow').addEventListener('click', () =>
     document.getElementById('products-section').scrollIntoView({ behavior:'smooth', block:'start' })
@@ -1029,6 +1614,250 @@
     updateCartBadge();
     document.getElementById('year').textContent = new Date().getFullYear();
   })();
+  // ══════════════════════════════════
+  //  AUTH SYSTEM
+  // ══════════════════════════════════
+  let currentUser = null; // { firstName, lastName, email }
+
+  const authOverlay    = document.getElementById('authOverlay');
+  const authModalClose = document.getElementById('authModalClose');
+  const authBtn        = document.getElementById('authBtn');
+  const userDropdown   = document.getElementById('userDropdown');
+  const tabLogin       = document.getElementById('tabLogin');
+  const tabSignup      = document.getElementById('tabSignup');
+  const loginForm      = document.getElementById('loginForm');
+  const signupForm     = document.getElementById('signupForm');
+  const forgotForm     = document.getElementById('forgotForm');
+  const authSubtitle   = document.getElementById('authSubtitle');
+
+  // ── Open / Close modal ──
+  function openAuthModal(tab) {
+    switchTab(tab || 'login');
+    authOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // focus first input
+    setTimeout(() => {
+      const first = authOverlay.querySelector('.auth-form:not(.hidden) .form-input');
+      if (first) first.focus();
+    }, 350);
+  }
+  function closeAuthModal() {
+    authOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    clearAllErrors();
+  }
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    loginForm.classList.add('hidden');
+    signupForm.classList.add('hidden');
+    forgotForm.classList.add('hidden');
+    tabLogin.classList.remove('active');
+    tabSignup.classList.remove('active');
+    clearAllErrors();
+    if (tab === 'login') {
+      loginForm.classList.remove('hidden');
+      tabLogin.classList.add('active');
+      authSubtitle.textContent = 'Sign in to your account';
+    } else if (tab === 'signup') {
+      signupForm.classList.remove('hidden');
+      tabSignup.classList.add('active');
+      authSubtitle.textContent = 'Create your free account';
+    } else if (tab === 'forgot') {
+      forgotForm.classList.remove('hidden');
+      authSubtitle.textContent = 'Reset your password';
+    }
+  }
+
+  // ── Validation helpers ──
+  function showErr(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show', show);
+    const input = el && el.previousElementSibling && el.previousElementSibling.classList.contains('form-input')
+      ? el.previousElementSibling
+      : el && el.closest('.form-group') && el.closest('.form-group').querySelector('.form-input');
+    if (input) input.classList.toggle('error', show);
+  }
+  function clearAllErrors() {
+    document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+    document.querySelectorAll('.form-input').forEach(e => e.classList.remove('error'));
+  }
+  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+  // ── Login submit ──
+  document.getElementById('loginSubmit').addEventListener('click', () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw    = document.getElementById('loginPassword').value;
+    let ok = true;
+    clearAllErrors();
+    if (!isValidEmail(email))  { showErr('loginEmailErr', true);    ok = false; }
+    if (pw.length < 6)         { showErr('loginPasswordErr', true); ok = false; }
+    if (!ok) return;
+
+    // Demo: accept any valid-format credentials
+    const stored = JSON.parse(localStorage.getItem('nexus_users') || '{}');
+    const user   = stored[email.toLowerCase()];
+    if (user && user.password === pw) {
+      loginSuccess(user);
+    } else if (!user) {
+      // Demo: auto-create on first login attempt
+      showToast('No account found. Please sign up first.');
+      switchTab('signup');
+      document.getElementById('signupEmail').value = email;
+    } else {
+      document.getElementById('loginPasswordErr').textContent = 'Incorrect password.';
+      showErr('loginPasswordErr', true);
+    }
+  });
+
+  // ── Signup submit ──
+  document.getElementById('signupSubmit').addEventListener('click', () => {
+    const first   = document.getElementById('signupFirst').value.trim();
+    const last    = document.getElementById('signupLast').value.trim();
+    const email   = document.getElementById('signupEmail').value.trim();
+    const pw      = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+    const agreed  = document.getElementById('agreeTerms').checked;
+    let ok = true;
+    clearAllErrors();
+    if (!first)               { showErr('signupFirstErr', true);    ok = false; }
+    if (!last)                { showErr('signupLastErr', true);     ok = false; }
+    if (!isValidEmail(email)) { showErr('signupEmailErr', true);    ok = false; }
+    if (pw.length < 6)        { showErr('signupPasswordErr', true); ok = false; }
+    if (pw !== confirm)       { showErr('signupConfirmErr', true);  ok = false; }
+    if (!agreed)              { showErr('agreeErr', true);          ok = false; }
+    if (!ok) return;
+
+    const stored = JSON.parse(localStorage.getItem('nexus_users') || '{}');
+    if (stored[email.toLowerCase()]) {
+      document.getElementById('signupEmailErr').textContent = 'An account with this email already exists.';
+      showErr('signupEmailErr', true);
+      return;
+    }
+    const user = { firstName: first, lastName: last, email: email.toLowerCase(), password: pw };
+    stored[email.toLowerCase()] = user;
+    localStorage.setItem('nexus_users', JSON.stringify(stored));
+    loginSuccess(user);
+  });
+
+  // ── Forgot password ──
+  document.getElementById('forgotSubmit').addEventListener('click', () => {
+    const email = document.getElementById('forgotEmail').value.trim();
+    clearAllErrors();
+    if (!isValidEmail(email)) { showErr('forgotEmailErr', true); return; }
+    closeAuthModal();
+    showToast(`📧 Reset link sent to ${email}`);
+  });
+
+  // ── Social auth (demo) ──
+  ['googleLoginBtn','googleSignupBtn'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      loginSuccess({ firstName: 'Google', lastName: 'User', email: 'google@demo.com', password: '' });
+    });
+  });
+  ['githubLoginBtn','githubSignupBtn'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      loginSuccess({ firstName: 'GitHub', lastName: 'User', email: 'github@demo.com', password: '' });
+    });
+  });
+
+  // ── Login success ──
+  function loginSuccess(user) {
+    currentUser = user;
+    localStorage.setItem('nexus_session', JSON.stringify(user));
+    closeAuthModal();
+    updateAuthUI();
+    showToast(`👋 Welcome back, ${user.firstName}!`);
+  }
+
+  // ── Logout ──
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    currentUser = null;
+    localStorage.removeItem('nexus_session');
+    updateAuthUI();
+    userDropdown.classList.remove('open');
+    showToast('You have been signed out.');
+  });
+
+  // ── Update header UI based on auth state ──
+  function updateAuthUI() {
+    const btn = document.getElementById('authBtn');
+    if (currentUser) {
+      const initials = (currentUser.firstName[0] + currentUser.lastName[0]).toUpperCase();
+      btn.outerHTML = `<button class="user-avatar-btn" id="authBtn" title="${currentUser.firstName} ${currentUser.lastName}" aria-label="Account menu">${initials}</button>`;
+    } else {
+      btn.outerHTML = `<a class="icon-btn" id="authBtn" title="Sign In" href="#" aria-label="Sign in"><i class="far fa-user"></i></a>`;
+    }
+    // Re-attach click listener
+    document.getElementById('authBtn').addEventListener('click', handleAuthBtnClick);
+    // Update dropdown info
+    if (currentUser) {
+      document.getElementById('dropdownName').textContent  = `${currentUser.firstName} ${currentUser.lastName}`;
+      document.getElementById('dropdownEmail').textContent = currentUser.email;
+      document.getElementById('dropdownAvatar').textContent = (currentUser.firstName[0] + currentUser.lastName[0]).toUpperCase();
+    }
+  }
+
+  // ── Auth button click handler ──
+  function handleAuthBtnClick(e) {
+    e.preventDefault();
+    if (currentUser) {
+      userDropdown.classList.toggle('open');
+    } else {
+      openAuthModal('login');
+    }
+  }
+
+  // ── Close dropdown on outside click ──
+  document.addEventListener('click', e => {
+    const wrap = document.getElementById('authBtnWrap');
+    if (wrap && !wrap.contains(e.target)) userDropdown.classList.remove('open');
+  });
+
+  // ── Tab events ──
+  tabLogin.addEventListener('click',  () => switchTab('login'));
+  tabSignup.addEventListener('click', () => switchTab('signup'));
+  document.getElementById('switchToSignup').addEventListener('click', () => switchTab('signup'));
+  document.getElementById('switchToLogin').addEventListener('click',  () => switchTab('login'));
+  document.getElementById('forgotLink').addEventListener('click',     () => switchTab('forgot'));
+  document.getElementById('backToLogin').addEventListener('click',    () => switchTab('login'));
+
+  // ── Close modal ──
+  authModalClose.addEventListener('click', closeAuthModal);
+  authOverlay.addEventListener('click', e => { if (e.target === authOverlay) closeAuthModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeAuthModal(); closeFavDrawer(); }
+  });
+
+  // ── Password visibility toggle ──
+  document.querySelectorAll('.toggle-pw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const inp = document.getElementById(btn.dataset.target);
+      const icon = btn.querySelector('i');
+      if (inp.type === 'password') {
+        inp.type = 'text'; icon.className = 'far fa-eye-slash';
+      } else {
+        inp.type = 'password'; icon.className = 'far fa-eye';
+      }
+    });
+  });
+
+  // ── Enter key submits active form ──
+  document.getElementById('loginPassword').addEventListener('keydown',  e => { if (e.key === 'Enter') document.getElementById('loginSubmit').click(); });
+  document.getElementById('signupConfirm').addEventListener('keydown',  e => { if (e.key === 'Enter') document.getElementById('signupSubmit').click(); });
+  document.getElementById('forgotEmail').addEventListener('keydown',    e => { if (e.key === 'Enter') document.getElementById('forgotSubmit').click(); });
+
+  // ── Restore session on load ──
+  (function restoreSession() {
+    const session = localStorage.getItem('nexus_session');
+    if (session) {
+      try { currentUser = JSON.parse(session); updateAuthUI(); } catch(e) {}
+    } else {
+      // Attach initial listener (logged-out state)
+      document.getElementById('authBtn').addEventListener('click', handleAuthBtnClick);
+    }
+  })();
+
 </script>
 </body>
 </html>
