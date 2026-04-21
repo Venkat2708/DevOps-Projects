@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>NexusShop — Premium Collection</title>
+  <title>VRC MART — Premium Collection</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"/>
   <style>
@@ -856,7 +856,7 @@
       <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">
         <i class="fas fa-bars"></i>
       </button>
-      <a class="brand" href="#">Nexus<span>Shop</span></a>
+      <a class="brand" href="#">VRC <span>MART</span></a>
     </div>
 
     <nav class="main-nav" id="mainNav">
@@ -1087,7 +1087,7 @@
   <div class="auth-modal" id="authModal">
     <div class="auth-modal-top">
       <button class="auth-modal-close" id="authModalClose" aria-label="Close"><i class="fas fa-times"></i></button>
-      <div class="auth-logo">NexusShop</div>
+      <div class="auth-logo">VRC MART</div>
       <div class="auth-subtitle" id="authSubtitle">Sign in to your account</div>
     </div>
 
@@ -1214,7 +1214,7 @@
   <div class="container">
     <div class="footer-inner">
       <div>
-        <div class="footer-brand">NexusShop</div>
+        <div class="footer-brand">VRC MART</div>
         <p class="footer-desc">A modern premium e-commerce experience built with HTML, CSS & JavaScript. Crafted with attention to every detail.</p>
         <div class="social-links">
           <a class="social-link" href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -1241,7 +1241,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bottom">© <span id="year"></span> NexusShop. All rights reserved.</div>
+    <div class="footer-bottom">© <span id="year"></span> VRC MART. All rights reserved.</div>
   </div>
 </footer>
 
