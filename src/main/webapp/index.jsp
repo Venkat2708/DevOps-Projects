@@ -534,7 +534,7 @@
       <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">
         <i class="fas fa-bars"></i>
       </button>
-      <a class="brand" href="#">VRC MART<span>Shop</span></a>
+      <a class="brand" href="#">VRC <span>MART</span></a>
     </div>
 
     <nav class="main-nav" id="mainNav">
